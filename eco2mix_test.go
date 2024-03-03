@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 func TestFetchNationalRealTimeData(t *testing.T) {
@@ -188,8 +189,11 @@ func TestFetchNationalRealTimeData(t *testing.T) {
 	}))
 	defer svr.Close()
 
+	from := time.Now()
+	to := time.Now()
+
 	c := NewEco2mixClient(svr.URL, nil)
-	res, err := c.FetchNationalRealTimeData(3)
+	res, err := c.FetchNationalRealTimeData(from, to, 3)
 	if err != nil {
 		t.Errorf("expected err to be nil got %v", err)
 	}

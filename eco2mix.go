@@ -9,6 +9,11 @@ import (
 	"time"
 )
 
+const (
+	OPENDATASOFT_API_PATH    = `%s/api/records/1.0/search/?%s`
+	OPENDATASOFT_API_BASEURL = `https://odre.opendatasoft.com`
+)
+
 type Eco2mixClient struct {
 	BaseUrl    string
 	httpClient *http.Client
@@ -31,7 +36,7 @@ func NewEco2mixClient(baseUrl string, client *http.Client) *Eco2mixClient {
 	return &c
 }
 
-func (client *Eco2mixClient) FetchNationalRealTimeData(maxResults int) ([]NationalRealTimeFields, error) {
+func (client *Eco2mixClient) FetchNationalRealTimeData(from time.Time, to time.Time, maxResults int) ([]NationalRealTimeFields, error) {
 	params := url.Values{}
 	params.Add("dataset", "eco2mix-national-tr")
 	params.Add("facet", "nature")
@@ -39,23 +44,31 @@ func (client *Eco2mixClient) FetchNationalRealTimeData(maxResults int) ([]Nation
 	params.Add("start", "0")
 	params.Add("rows", fmt.Sprintf("%d", maxResults))
 	params.Add("sort", "date_heure")
-	params.Add("q", fmt.Sprintf("date_heure:[%s TO #now()] AND NOT #null(taux_co2)", time.Now().Format("2006-01-02")))
+	params.Add("q", fmt.Sprintf("date_heure:[%s TO %s] AND NOT #null(taux_co2)", from.Format("2006-01-02"), to.Format("2006-01-02")))
 	queryString := params.Encode()
 
 	resp, err := client.httpClient.Get(fmt.Sprintf(OPENDATASOFT_API_PATH, client.BaseUrl, queryString))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error fetching data: %s", err)
 	}
+	// length := resp.ContentLength
+	// fmt.Printf("resp content length: %d\n", length)
+	// fmt.Printf("resp: %v\n", resp)
+
+	// print curl equivalent command
+	fmt.Printf("curl -X GET %s\n", fmt.Sprintf(OPENDATASOFT_API_PATH, client.BaseUrl, queryString))
+	fmt.Printf("query string: %s\n", queryString)
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error reading response: %s", err)
 	}
 
+	// fmt.Printf("body: %s\n", body)
 	var data NationalRealTimeResponse
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error unmarshalling response: %s", err)
 	}
 
 	var fields []NationalRealTimeFields
@@ -66,32 +79,26 @@ func (client *Eco2mixClient) FetchNationalRealTimeData(maxResults int) ([]Nation
 	return fields, nil
 }
 
-const (
-	OPENDATASOFT_API_PATH    = `%s/api/records/1.0/search/?%s`
-	OPENDATASOFT_API_BASEURL = `https://odre.opendatasoft.com`
-)
-
 // Ce jeu de données, rafraîchi une fois par heure, présente des données
 // "temps réel" issues de l'application éCO2mix. Elles proviennent des
 // télémesures des ouvrages, complétées par des forfaits et estimations.
 //
 // Vous y trouverez au pas quart d'heure :
 //
-// - La consommation réalisée.
-// - Les prévisions de consommation établies la veille (J-1) et celles
-//   réactualisées le jour même (J).
-// - La production selon les différentes filières composant le mix énergétique.
-// - La consommation des pompes dans les Stations de Transfert d'Energie
-//   par Pompage (STEP).
-// - Les échanges physiques aux frontières.
-// - Une estimation des émissions de carbone générées par la production
-//   d'électricité en France.
-// - Le découpage en filière et technologie du mix de production.
+//   - La consommation réalisée.
+//   - Les prévisions de consommation établies la veille (J-1) et celles
+//     réactualisées le jour même (J).
+//   - La production selon les différentes filières composant le mix énergétique.
+//   - La consommation des pompes dans les Stations de Transfert d'Energie
+//     par Pompage (STEP).
+//   - Les échanges physiques aux frontières.
+//   - Une estimation des émissions de carbone générées par la production
+//     d'électricité en France.
+//   - Le découpage en filière et technologie du mix de production.
 //
 // Vous y trouverez au pas demi-heure :
 //
 // - Les échanges commerciaux aux frontières.
-//
 type NationalRealTimeFields struct {
 	Bioenergies              int64  `json:"bioenergies"`                 // Bioénergies (MW)
 	BioenergiesBiogaz        int64  `json:"bioenergies_biogaz"`          // Bioénergies - Biogaz (MW) - Production bioénergies réalisée à partir du biogaz
