@@ -143,6 +143,35 @@ type NationalRealTimeFields struct {
 	TauxCo2                  int64  `json:"taux_co2"`                    // Taux de CO2 (g/kWh) - Estimation des émissions de carbone générées par la production d'électricité en France.
 }
 
+func FindClosestRecord(records []NationalRealTimeFields, dateHeure time.Time, maxDiff time.Duration) (closestRecord NationalRealTimeFields, err error) {
+	// not optimized ! O(n)
+	var diff time.Duration
+	var closestDiff time.Duration
+	closestDiff = maxDiff
+	for _, record := range records {
+		recordDateHeure, err := time.Parse(time.RFC3339, record.DateHeure)
+		if err != nil {
+			return closestRecord, fmt.Errorf("error parsing date: %s", err)
+		}
+		diff = dateHeure.Sub(recordDateHeure)
+		if diff < 0 {
+			diff = -diff
+		}
+		if diff < closestDiff {
+			closestDiff = diff
+			closestRecord = record
+		}
+	}
+	if closestDiff == maxDiff {
+		return closestRecord, fmt.Errorf("no record found")
+	}
+	if closestRecord.TauxCo2 == 0 {
+		return closestRecord, fmt.Errorf("no completed record found")
+	}
+
+	return closestRecord, nil
+}
+
 type NationalRealTimeRecord struct {
 	Datasetid       string                 `json:"datasetid"`
 	Fields          NationalRealTimeFields `json:"fields"`
