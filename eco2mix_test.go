@@ -1,4 +1,4 @@
-package eco2mix
+package ego2mix
 
 import (
 	"fmt"

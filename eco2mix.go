@@ -1,4 +1,4 @@
-package eco2mix
+package ego2mix
 
 import (
 	"encoding/json"
@@ -109,8 +109,8 @@ type NationalRealTimeFields struct {
 	Date                     string `json:"date"`                        // Date
 	DateHeure                string `json:"date_heure"`                  // Date - Heure
 	DestockageBatterie       string `json:"destockage_batterie"`         // Déstockage batterie (MW)
-	EchCommAllemagneBelgique string `json:"ech_comm_allemagne_belgique"` // Ech. comm. Allemagne-Belgique (MW) - Solde des échanges commerciaux entre la France et la zone Allemagne et Belgique. Exportateur si négatif, importateur si positif.
-	EchCommAngleterre        string `json:"ech_comm_angleterre"`         // Ech. comm. Angleterre (MW) - Solde des échanges commerciaux entre la France et l'Angleterre. Exportateur si négatif, importateur si positif.
+	EchCommAllemagneBelgique int64  `json:"ech_comm_allemagne_belgique"` // Ech. comm. Allemagne-Belgique (MW) - Solde des échanges commerciaux entre la France et la zone Allemagne et Belgique. Exportateur si négatif, importateur si positif.
+	EchCommAngleterre        int64  `json:"ech_comm_angleterre"`         // Ech. comm. Angleterre (MW) - Solde des échanges commerciaux entre la France et l'Angleterre. Exportateur si négatif, importateur si positif.
 	EchCommEspagne           int64  `json:"ech_comm_espagne"`            // Ech. comm. Espagne (MW) - Solde des échanges commerciaux entre la France et l'Espagne. Exportateur si négatif, importateur si positif.
 	EchCommItalie            int64  `json:"ech_comm_italie"`             // Ech. comm. Italie (MW) - Solde des échanges commerciaux entre la France et l'Italie. Exportateur si négatif, importateur si positif.
 	EchCommSuisse            int64  `json:"ech_comm_suisse"`             // Ech. comm. Suisse (MW) - Solde des échanges commerciaux entre la France et la Suisse. Exportateur si négatif, importateur si positif.
