@@ -2,10 +2,12 @@
 
 This Go library calls the Eco2mix API from RTE and returns data about the French electricity grid.
 
+Those data are real time data.
+If you want fully validated data, one shoul refer to this [API](https://odre.opendatasoft.com/explore/dataset/eco2mix-national-cons-def/information/?disjunctive.nature), data are available around one year later.
 ##deploy
-git tab v0.1.x
-git push origin v0.1.x
-GOPROXY=proxy.golang.org go list -m github.com/timebis/ego2mix@v0.1.x
+git tag v0.1.2
+git push origin v0.1.2
+GOPROXY=proxy.golang.org go list -m github.com/timebis/ego2mix@v0.1.2
 
 ## Usage
 see example file
