@@ -45,6 +45,7 @@ func (client *Eco2mixClient) FetchNationalRealTimeData(from time.Time, to time.T
 	params.Add("start", "0")
 	params.Add("sort", "date_heure")
 	params.Add("q", fmt.Sprintf("date_heure:[%s TO %s] AND NOT #null(taux_co2)", from.Format("2006-01-02"), to.Format("2006-01-02")))
+	params.Add("limit", fmt.Sprintf("%d", maxResults))
 	queryString := params.Encode()
 
 	resp, err := client.httpClient.Get(fmt.Sprintf(OPENDATASOFT_API_PATH, client.BaseUrl, queryString))
