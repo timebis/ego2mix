@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	OPENDATASOFT_API_PATH    = `%s/api/records/1.0/search/?%s`
+	OPENDATASOFT_API_PATH    = `%s/api/explore/v2.1/catalog/datasets/eco2mix-national-tr/records?%s`
 	OPENDATASOFT_API_BASEURL = `https://odre.opendatasoft.com`
 )
 
@@ -40,12 +40,10 @@ func NewEco2mixClient(baseUrl string, client *http.Client) *Eco2mixClient {
 func (client *Eco2mixClient) FetchNationalRealTimeData(from time.Time, to time.Time, maxResults int) ([]NationalRealTimeFields, error) {
 	params := url.Values{}
 	params.Add("dataset", "eco2mix-national-tr")
-	params.Add("facet", "nature")
-	params.Add("facet", "date_heure")
-	params.Add("start", "0")
-	params.Add("sort", "date_heure")
-	params.Add("q", fmt.Sprintf("date_heure:[%s TO %s] AND NOT #null(taux_co2)", from.Format("2006-01-02"), to.Format("2006-01-02")))
 	params.Add("limit", fmt.Sprintf("%d", maxResults))
+	params.Add("order_by", "date_heure asc")
+	params.Add("where", fmt.Sprintf("taux_co2 is not null AND date_heure>=date'%s' AND date_heure<=date'%s'", from.Format("2006-01-02"), to.Format("2006-01-02"))) // Time filter
+
 	queryString := params.Encode()
 
 	resp, err := client.httpClient.Get(fmt.Sprintf(OPENDATASOFT_API_PATH, client.BaseUrl, queryString))
@@ -57,7 +55,7 @@ func (client *Eco2mixClient) FetchNationalRealTimeData(from time.Time, to time.T
 	// fmt.Printf("resp: %v\n", resp)
 
 	// print curl equivalent command
-	// fmt.Printf("curl -X GET %s\n", fmt.Sprintf(OPENDATASOFT_API_PATH, client.BaseUrl, queryString))
+	// fmt.Printf("curl -X GET '%s'\n", fmt.Sprintf(OPENDATASOFT_API_PATH, client.BaseUrl, queryString))
 	// fmt.Printf("query string: %s\n", queryString)
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -68,16 +66,15 @@ func (client *Eco2mixClient) FetchNationalRealTimeData(from time.Time, to time.T
 		return nil, fmt.Errorf("error fetching data: status=%s : body=%v", resp.Status, string(body))
 	}
 	// fmt.Printf("body: %s\n", body)
-	var data NationalRealTimeResponse
+	var data NationalRealTimeRecord
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		return nil, fmt.Errorf("error unmarshalling response: %s", err)
 	}
+	// fmt.Printf("data :%v", data)
 
 	var fields []NationalRealTimeFields
-	for _, r := range data.Records {
-		fields = append(fields, r.Fields)
-	}
+	fields = data.Results
 
 	return fields, nil
 }
@@ -176,10 +173,8 @@ func FindClosestRecord(records []NationalRealTimeFields, dateHeure time.Time, ma
 }
 
 type NationalRealTimeRecord struct {
-	Datasetid       string                 `json:"datasetid"`
-	Fields          NationalRealTimeFields `json:"fields"`
-	RecordTimestamp string                 `json:"record_timestamp"`
-	Recordid        string                 `json:"recordid"`
+	TotalCount int                      `json:"total_count"`
+	Results    []NationalRealTimeFields `json:"results"`
 }
 
 // NationalRealTimeResponse represents the response to the "eco2mix-national-tr"
