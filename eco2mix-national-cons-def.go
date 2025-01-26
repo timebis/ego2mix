@@ -78,7 +78,7 @@ func (client *Eco2mixClient) FetchNationalFinalData(from time.Time, to time.Time
 	// fmt.Printf("resp: %v\n", resp)
 
 	// print curl equivalent command
-	fmt.Printf("curl -X GET %s\n", fmt.Sprintf(OPENDATASOFT_API_PATH, client.BaseUrl, queryString))
+	// fmt.Printf("curl -X GET %s\n", fmt.Sprintf(OPENDATASOFT_API_PATH, client.BaseUrl, queryString))
 	// fmt.Printf("query string: %s\n", queryString)
 
 	body, err := ioutil.ReadAll(resp.Body)
