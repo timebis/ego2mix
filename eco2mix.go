@@ -63,7 +63,7 @@ func (client *Eco2mixClient) FetchNationalRealTimeData(from time.Time, to time.T
 		return nil, fmt.Errorf("error reading response: %s", err)
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("error fetching data: status=%s : body=%v", resp.Status, string(body))
+		return nil, fmt.Errorf("error fetching data: status=%s : body=%+v", resp.Status, string(body))
 	}
 	// fmt.Printf("body: %s\n", body)
 	var data NationalRealTimeRecord
