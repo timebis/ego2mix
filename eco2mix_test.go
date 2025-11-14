@@ -6,8 +6,8 @@ import (
 )
 
 func TestFetchNationalRealTimeData(t *testing.T) {
-	from := time.Date(2023, 7, 3, 0, 0, 0, 0, time.UTC)
-	to := time.Date(2023, 7, 5, 0, 0, 0, 0, time.UTC)
+	from := time.Date(2025, 7, 3, 0, 0, 0, 0, time.UTC)
+	to := time.Date(2025, 7, 5, 0, 0, 0, 0, time.UTC)
 
 	c := NewEco2mixClient("", nil)
 
@@ -19,7 +19,7 @@ func TestFetchNationalRealTimeData(t *testing.T) {
 		t.Errorf("expected 3 records, got %d", len(res))
 	}
 
-	expectedTauxCo2 := []int64{20, 20, 21}
+	expectedTauxCo2 := []int64{32, 32, 31}
 	for i := range expectedTauxCo2 {
 		if res[i].TauxCo2 != expectedTauxCo2[i] {
 			t.Errorf("record %d: expected value %d, got %d", i, expectedTauxCo2[i], res[i].TauxCo2)

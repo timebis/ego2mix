@@ -108,7 +108,7 @@ type NationalRealTimeFields struct {
 	Consommation             int64  `json:"consommation"`                // Consommation (MW)
 	Date                     string `json:"date"`                        // Date
 	DateHeure                string `json:"date_heure"`                  // Date - Heure
-	DestockageBatterie       string `json:"destockage_batterie"`         // Déstockage batterie (MW)
+	DestockageBatterie       int64  `json:"destockage_batterie"`         // Déstockage batterie (MW)
 	EchCommAllemagneBelgique int64  `json:"ech_comm_allemagne_belgique"` // Ech. comm. Allemagne-Belgique (MW) - Solde des échanges commerciaux entre la France et la zone Allemagne et Belgique. Exportateur si négatif, importateur si positif.
 	EchCommAngleterre        int64  `json:"ech_comm_angleterre"`         // Ech. comm. Angleterre (MW) - Solde des échanges commerciaux entre la France et l'Angleterre. Exportateur si négatif, importateur si positif.
 	EchCommEspagne           int64  `json:"ech_comm_espagne"`            // Ech. comm. Espagne (MW) - Solde des échanges commerciaux entre la France et l'Espagne. Exportateur si négatif, importateur si positif.
@@ -116,8 +116,8 @@ type NationalRealTimeFields struct {
 	EchCommSuisse            int64  `json:"ech_comm_suisse"`             // Ech. comm. Suisse (MW) - Solde des échanges commerciaux entre la France et la Suisse. Exportateur si négatif, importateur si positif.
 	EchPhysiques             int64  `json:"ech_physiques"`               // Ech. physiques (MW) - Solde des échanges physiques aux interconnexions avec les autres pays: Exportateur si négatif, importateur si positif.
 	Eolien                   int64  `json:"eolien"`                      // Eolien (MW)
-	EolienOffshore           string `json:"eolien_offshore"`             // Eolien offshore (MW)
-	EolienTerrestre          string `json:"eolien_terrestre"`            // Eolien terrestre (MW)
+	EolienOffshore           int64  `json:"eolien_offshore"`             // Eolien offshore (MW)
+	EolienTerrestre          int64  `json:"eolien_terrestre"`            // Eolien terrestre (MW)
 	Fioul                    int64  `json:"fioul"`                       // Fioul (MW)
 	FioulAutres              int64  `json:"fioul_autres"`                // Fioul - Autres (MW)
 	FioulCogen               int64  `json:"fioul_cogen"`                 // Fioul - Cogénération (MW) - Production des cogénérations fonctionnant au fioul
@@ -139,7 +139,7 @@ type NationalRealTimeFields struct {
 	PrevisionJ               int64  `json:"prevision_j"`                 // Prévision J (MW) - Prévision, réalisée le jour même, de la consommation .
 	PrevisionJ1              int64  `json:"prevision_j1"`                // Prévision J-1 (MW) - Prévision, réalisée la veille pour le lendemain, de la consommation.
 	Solaire                  int64  `json:"solaire"`                     // Solaire (MW)
-	StockageBatterie         string `json:"stockage_batterie"`           // Stockage batterie (MW)
+	StockageBatterie         int64  `json:"stockage_batterie"`           // Stockage batterie (MW)
 	TauxCo2                  int64  `json:"taux_co2"`                    // Taux de CO2 (g/kWh) - Estimation des émissions de carbone générées par la production d'électricité en France.
 }
 
